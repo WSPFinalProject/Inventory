@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package finalprojectwsp;
+package csc4380.finalproject;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,21 +20,21 @@ public class User_bean {
     private static Connection con;
     private static java.sql.Statement st;
     private static ResultSet rs;
-    private String  jdbc_drivers, url, user, password = "";
-    private String current_user;
-    private static String status;
+    //private String  jdbc_drivers, url, user, password = "";
+    private static int current_user;
 
     public User_bean(Connection c) {
         con = c;
     }
 
     public static String signup(String uname, String pass) {
-        status = "";
+        String status = "";
 
         try {
             st = con.createStatement();
             if(!userExists(uname)) {
-                st.executeUpdate("INSERT into users (Username, Password) VALUES ('"+uname+"', '"+pass+"')");
+                st.executeUpdate("INSERT INTO users (Username, Password) VALUES ('"+uname+"', '"+pass+"')");
+                addCart();
                 status = "Signup Successful";
             } else {
                 status = "User Already Exists";
@@ -49,6 +50,16 @@ public class User_bean {
         return status;
     }
 
+    public static void addCart() {
+        try {
+            st = con.createStatement();
+            st.executeUpdate("INSERT INTO cart (Book1, Book2, Book3, Book4, Book5, B1Quan, B2Quan, B3Quan, B4Quan, B5Quan) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)");
+        } catch (SQLException ex) {
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Add Cart Failed");
+        }
+    }
+
     public static boolean userExists(String uname) {
         try {
             st = con.createStatement();
@@ -59,15 +70,15 @@ public class User_bean {
                 return false;
 
         } catch (SQLException ex) {
-               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
-               System.out.println("User Check Failed");
+            Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("User Check Failed");
         }
 
         return false;
     }
 
     public static String login(String uname, String pass) {
-        status = "";
+        String status = "";
 
         try {
             st = con.createStatement();
@@ -79,23 +90,17 @@ public class User_bean {
                 } else {
                     status = "Login Successful";
                 }
+                current_user = Integer.parseInt(rs.getString(1));
             } else {
                 status = "Login Failed";
             }
 
         } catch (SQLException ex) {
-               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
-               System.out.println("Login Failed");
-               status = "Login Failed";
+            Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Login Failed");
+            status = "Login Failed";
         }
 
-        return status;
-    }
-    void setStatus(String s) {
-        status = s;
-    }
-
-    String getStatus() {
         return status;
     }
 
@@ -151,7 +156,7 @@ public class User_bean {
             } catch (SQLException ex) {
                 Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Add to Cart Failed");
-                status = "Add to Cart Successful";
+                status = "Add to Cart Failed";
             }
         }
 
@@ -205,10 +210,19 @@ public class User_bean {
         return false;
     }
 
-    public static String removeFromCart() {
+    public static String removeFromCart(int cart_slot) {
         String status = "";
 
+        try {
+            st = con.createStatement();
+            st.executeUpdate("UPDATE cart SET Book"+cart_slot+" = NULL, B"+cart_slot+"Quan = NULL WHERE UserID = "+current_user+"");
+            status = "Remove from Cart Successful";
 
+            } catch (SQLException ex) {
+                Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Remove from Cart Failed");
+                status = "Remove from Cart Failed";
+            }
 
         return status;
     }
