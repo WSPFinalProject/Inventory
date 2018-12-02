@@ -10,36 +10,63 @@ package finalprojectwsp;
  * @author nikhitak
  */
 public class Controller {
-    private static Model m;
+    private static Admin_bean a;
+    private static User_bean u;
+    private static String books [][];
+    private static int numOfBooks;
+    private static int checkOutBooks[] ;
     
-    public Controller(Model model)
+    public Controller(User_bean model)
     {
-        m = model;
-        m.database();
+        u = model;
+        
     }
     
-    public void btnLogin(View v){
+    public void btnLogin(view v){
+        u.login(v.getUserLogin(), v.getPasswordLogin());
+        v.setStatus(u.getStatus());
+        if(u.getStatus().equals("login success")) {
+            //Need to define what to do here
+    }
         
     }
-    public void btnSignUp(View v){
-        
-    }
-    public void btnAddBook(View v){
-        
-    }
-    public void btnDeleteBook(View v){
-        
-    }
-    public void btnUpdateBook(View v){
-        
-    }
-    public void btnCheckOutBook(View){
-        
-    }
-    public int decrementBooks(int numOfBooks, int booksBought){
-        if(/*name of book = name of book bought*/){
-                numOfBooks = numbOfBooks-booksBought;
+    public void btnSignUp(view v){
+        u.signup(v.getUsername(), v.getPassword());
+        v.setStatus(u.getStatus());
+        u.userExists(v.getStatus());
+        v.setStatus(u.getStatus());
        
     }
+    public int getTotalNumOfBooks(){
+        String books [][] = a.getInventory();
+        numOfBooks= books.length;
+        return numOfBooks;
+    }
+
+    public void btnAddBook(view v){
+       a.addBook(v.getTitleAdd(),v.getAuthorAdd(),v.getGenreAdd(),v.getPublisherAdd(),Integer.parseInt(v.getQuantityAdd()));
+    }
+    public void btnDeleteBook(view v){
+       a.deleteBook(Integer.parseInt(v.getBookIDEdit()));
+        
+    }
+    public void btnUpdateBook(view v){
+        a.editBook(Integer.parseInt(v.getBookIDEdit()),v.getTitleEdit(),v.getAuthorEdit(),v.getGenreEdit(),v.getPublisherEdit(),Integer.parseInt(v.getQuantityEdit()));
+        
+    }
+    public void btnCheckOutBook(view v){
+        for(int i =0;i<Integer.parseInt(v.getQuantityAdd());i++){
+            checkOutBooks[i]=(Integer.parseInt(v.getBookIDEdit()));
+        }
+        for(int i =0;i<Integer.parseInt(v.getQuantityAdd());i++){
+            a.deleteBook(checkOutBooks[i]);
+        }
+        
+    }
+    public void btnSearchBooks(view v){
+        a.checkByAuthor(v.getAuthorAdd());
+        a.checkByTitle(v.getTitleAdd());
+    }
+    }
     
-}
+

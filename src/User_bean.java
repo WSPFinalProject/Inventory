@@ -21,13 +21,14 @@ public class User_bean {
     private static ResultSet rs;
     private String  jdbc_drivers, url, user, password = "";
     private String current_user;
+    private static String status;
     
     public User_bean(Connection c) {
         con = c;
     }
     
     public static String signup(String uname, String pass) {
-        String status = "";
+        status = "";
         
         try {
             st = con.createStatement();
@@ -66,7 +67,7 @@ public class User_bean {
     }
     
     public static String login(String uname, String pass) {
-        String status = "";
+        status = "";
         
         try {
             st = con.createStatement();
@@ -88,6 +89,13 @@ public class User_bean {
                status = "Login Failed";
         }
         
+        return status;
+    }
+    void setStatus(String s) {
+        status = s;
+    }
+    
+    String getStatus() {
         return status;
     }
 }
