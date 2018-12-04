@@ -1,4 +1,4 @@
-package finalprojectwsp;
+package csc4380.finalproject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,9 +6,12 @@ package finalprojectwsp;
  * and open the template in the editor.
  */
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import javax.swing.ButtonModel;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author FarNooshShh
@@ -22,12 +25,15 @@ public class view extends javax.swing.JFrame {
     int bookId, quantity;
     Controller c;
     //bean myBean;
-    public view() {
+    public view(Controller con) {
         initComponents();
         this.setTitle("Inventory Tracking System");
+        this.setVisible(true);
         centerMe();
         buttonGroup.add(radioByName);
         buttonGroup.add(radioByAuthor);
+        this.initListeners();
+        c = con;
     }
 
     public void centerMe(){
@@ -85,14 +91,11 @@ public class view extends javax.swing.JFrame {
          public void addToCart(ActionListener number){  
         this.addToCartButton.addActionListener(number);
     }
-          public void txtBookIdOrder1(ActionListener number){  
-        this.bookIdOrder1.addActionListener(number);
+          public void txtBookId(ActionListener number){  
+        this.orderBookID.addActionListener(number);
     }
-           public void txtBookIdOrder2(ActionListener number){  
-        this.bookIdOrder2.addActionListener(number);
-    }
-         public void txtBookIdOrder3(ActionListener number){  
-        this.bookIdOrder3.addActionListener(number);
+           public void txtBookQuantity(ActionListener number){  
+        this.orderBookQuantity.addActionListener(number);
     }
           public void backButton(ActionListener number){  
         this.goBackButton.addActionListener(number);
@@ -168,16 +171,117 @@ public class view extends javax.swing.JFrame {
     public String getTitleEdit(){
               return textTitleEdit.getText();
          }
+    public String getUserLoginInput(){
+              return usernameLoginInput.getText();
+         }
+    public String getPasswordLoginInput(){
+              return passwordLoginInput.getText();
+         }
+    public String getNameSignup(){
+              return nameSignup.getText();
+         }
+    public String getUNSignup(){
+              return usernameSignup.getText();
+         }
+     public String getPWSignup(){
+              return passwordSignup.getText();
+         }
+     public String getTitle() {
+         return textTitleAdd.getText();
+     }
+     
+     public String getAuthor(){
+        return textAuthorAdd.getText();
+     }
+     
+     public String getGenre() {
+         return textGenreAdd.getText();
+     }
+     
+     public String getPublisher() {
+         return textPublisherAdd.getText();
+     }
+     
+     public String getQuantity() {
+         return textQuantityAdd.getText();
+     }
+     
+     public String getDeleteID() {
+         return textDelete.getText();
+     }
+     
+     public String getOrderID() {
+         return orderBookID.getText();
+     }
+     
+     public String getOrderQuantity() {
+         return orderBookQuantity.getText();
+     }
+     
+     public int searchMethod() {
+        //ButtonModel bm = buttonGroup.getSelection();
+        //Object[] x = bm.getSelectedObjects();
+        if(radioByName.isSelected())
+            return 1;
+        else
+            return 2;
+     }
+     
+     public String getSearch() {
+         return textSearch.getText();
+     }
+     
     void initListeners() {
-        addButton.addActionListener(e -> c.btnAddBook(this));
+        addButton.addActionListener(e -> c.showAddBook(this));
         deleteButton.addActionListener(e -> c.btnDeleteBook(this));
-        editButton.addActionListener(e -> c.btnUpdateBook(this));
+        editButton.addActionListener(e -> c.showUpdateBook(this));
         submitOrderButton.addActionListener(e -> c.btnCheckOutBook(this));
-        loginButton.addActionListener(e -> c.btnLogin(this));
-        signUpButton.addActionListener(e -> c.btnSignUp(this));
-        searchButton.addActionListener(e -> c.btnSearchBooks(this));
+        loginButton.addActionListener(e -> c.showLogin(this));
+        signUpButton.addActionListener(e -> c.showSignup(this));
+        searchButton.addActionListener(e -> c.btnSearchBooks(this,searchMethod()));
+        dialogLoginButton.addActionListener(e -> c.btnLogin(this));
+        dialogSignupButton.addActionListener(e -> c.btnSignUp(this));
+        btnSubmitAdd.addActionListener(e -> c.btnAddBook(this));
+        btnUpdateEdit.addActionListener(e -> c.btnUpdateBook(this));
+        addToCartButton.addActionListener(e -> c.btnAddtoCart(this));
+        orderButton.addActionListener(e -> c.showOrderDialog(this));
+        cartButton.addActionListener(e -> c.showCart(this));
     }
           
+    public void showLoginDialog() {
+        dialogLogin.pack();
+        dialogLogin.setVisible(true);
+    }
+    
+    public void showSignupDialog() {
+        DialogSignup.pack();
+        DialogSignup.setVisible(true);
+    }
+    
+    public void showAdd() {
+        dialogAdd.pack();
+        dialogAdd.setVisible(true);
+    }
+    
+    public void showUpdate() {
+        dialogEdit.pack();
+        dialogEdit.setVisible(true);
+    }
+    
+    public void showOrder() {
+        dialogOrder.pack();
+        dialogOrder.setVisible(true);
+    }
+    
+    public void addToTable(String[][] results) {
+        DefaultTableModel dtm = new DefaultTableModel(0,0);
+        String[] head = {"BookID", "Title", "Author", "Genre", "Publisher", "Quantity"};
+        dtm.setColumnIdentifiers(head);
+        mainTable.setModel(dtm);
+        for(int i = 0; i < results.length; i++) {
+            dtm.addRow(new String[] {results[i][0],results[i][1],results[i][2],results[i][3],results[i][4],results[i][5]});
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -235,9 +339,8 @@ public class view extends javax.swing.JFrame {
         dialogSignupButton = new javax.swing.JButton();
         dialogOrder = new javax.swing.JDialog();
         jLabel27 = new javax.swing.JLabel();
-        bookIdOrder1 = new javax.swing.JTextField();
-        bookIdOrder2 = new javax.swing.JTextField();
-        bookIdOrder3 = new javax.swing.JTextField();
+        orderBookID = new javax.swing.JTextField();
+        orderBookQuantity = new javax.swing.JTextField();
         addToCartButton = new javax.swing.JButton();
         dialogCartView = new javax.swing.JDialog();
         jLabel28 = new javax.swing.JLabel();
@@ -490,10 +593,10 @@ public class view extends javax.swing.JFrame {
         jLabel19.setFont(new java.awt.Font("Menlo", 1, 14)); // NOI18N
         jLabel19.setText("Enter Information to Login:");
 
-        jLabel20.setFont(new java.awt.Font("Marlett", 0, 13)); // NOI18N
+        jLabel20.setFont(new java.awt.Font("Lucida Sans", 0, 13)); // NOI18N
         jLabel20.setText("User Name: ");
 
-        jLabel21.setFont(new java.awt.Font("Marlett", 0, 13)); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Lucida Sans", 0, 13)); // NOI18N
         jLabel21.setText("Password: ");
 
         dialogLoginButton.setText("Login");
@@ -519,7 +622,7 @@ public class view extends javax.swing.JFrame {
                     .addGroup(dialogLoginLayout.createSequentialGroup()
                         .addGap(151, 151, 151)
                         .addComponent(dialogLoginButton)))
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         dialogLoginLayout.setVerticalGroup(
             dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -539,7 +642,7 @@ public class view extends javax.swing.JFrame {
                 .addContainerGap(59, Short.MAX_VALUE))
         );
 
-        jLabel22.setFont(new java.awt.Font("Marlett", 1, 14)); // NOI18N
+        jLabel22.setFont(new java.awt.Font("Lucida Sans", 1, 14)); // NOI18N
         jLabel22.setText("Enter Information to register: ");
 
         jLabel23.setText("Name: ");
@@ -598,7 +701,7 @@ public class view extends javax.swing.JFrame {
                     .addComponent(passwordSignup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(49, 49, 49)
                 .addComponent(dialogSignupButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         jLabel27.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -613,10 +716,12 @@ public class view extends javax.swing.JFrame {
             .addGroup(dialogOrderLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bookIdOrder3, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bookIdOrder2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel27)
-                    .addComponent(bookIdOrder1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dialogOrderLayout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(21, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogOrderLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -628,13 +733,11 @@ public class view extends javax.swing.JFrame {
             .addGroup(dialogOrderLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel27)
-                .addGap(27, 27, 27)
-                .addComponent(bookIdOrder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(bookIdOrder2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bookIdOrder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addComponent(addToCartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(67, Short.MAX_VALUE))
         );
@@ -977,7 +1080,7 @@ public class view extends javax.swing.JFrame {
 
         orderButton.setText("Order Books");
 
-        cartButton.setText("Veiw Cart");
+        cartButton.setText("View Cart");
 
         checkoutButton.setText("Check Out");
 
@@ -1119,9 +1222,6 @@ public class view extends javax.swing.JFrame {
     public javax.swing.JButton addButton;
     private javax.swing.JButton addToCartButton;
     private javax.swing.JPanel adminPanel;
-    private javax.swing.JTextField bookIdOrder1;
-    private javax.swing.JTextField bookIdOrder2;
-    private javax.swing.JTextField bookIdOrder3;
     public javax.swing.JButton btnSubmitAdd;
     public javax.swing.JButton btnUpdateEdit;
     private javax.swing.ButtonGroup buttonGroup;
@@ -1189,6 +1289,8 @@ public class view extends javax.swing.JFrame {
     private javax.swing.JTextArea messageAlert;
     private javax.swing.JMenuItem mnuClose;
     private javax.swing.JTextField nameSignup;
+    private javax.swing.JTextField orderBookID;
+    private javax.swing.JTextField orderBookQuantity;
     private javax.swing.JButton orderButton;
     private javax.swing.JTextField passwordLoginInput;
     private javax.swing.JTextField passwordSignup;

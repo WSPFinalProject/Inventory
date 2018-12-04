@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package finalprojectwspt;
+package csc4380.finalproject;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,13 +22,14 @@ public class User_bean {
     private static ResultSet rs;
     //private String  jdbc_drivers, url, user, password = "";
     private static int current_user;
+    private static String status;
 
     public User_bean(Connection c) {
         con = c;
     }
 
     public static String signup(String uname, String pass) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -78,7 +79,7 @@ public class User_bean {
     }
 
     public static String login(String uname, String pass) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -144,7 +145,7 @@ public class User_bean {
     }
 
     public static String addToCart(int bookID, int quantity) {
-        String status = "";
+        status = "";
         int slot = getNextCartSlot();
 
         if(slot > 0) {
@@ -211,7 +212,7 @@ public class User_bean {
     }
 
     public static String removeFromCart(int cart_slot) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -225,5 +226,61 @@ public class User_bean {
             }
 
         return status;
+    }
+    
+    public static String getStatus() {
+        return status;
+    }
+    
+    public static void setStatus(String s) {
+        status = s;
+    }
+    
+    public String[][] getCart(int uid) {
+        String[][] temp = new String[5][6];
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM cart WHERE UserID = "+uid+"");
+            status = "Get Cart Successful";
+            
+            if(rs.next()) {
+                for(int i = 0; i < 5; i++) {
+                    String s = rs.getString(i+2);
+                    //System.out.println(s);
+                    if(s != null) {
+                        temp[i] = getBook(Integer.parseInt(s));
+                        temp[i][5] = rs.getString(i+6);
+                    } else {
+                        temp[i] = null;
+                    }
+                } 
+            }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Get Cart Failed");
+                status = "Get Cart Failed";
+            }
+        return temp;
+    }
+    
+    public String[] getBook(int bookID) {
+        String[] results = new String[6];
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM book WHERE BookID = "+bookID+"");
+
+            if(rs.next()) {
+                for(int i = 0; i < 6; i++) {
+                    results[i] = rs.getString(i+1);
+                }
+            }
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Check By Title Failed");
+        }
+        return results;
     }
 }

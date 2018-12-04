@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package finalprojectwsp;
+package csc4380.finalproject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -211,4 +211,25 @@ public class Admin_bean {
 
         return results;
     }
+    
+    public String[] getBook(int bookID) {
+        String[] results = new String[6];
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM book WHERE BookID = "+bookID+"");
+
+            if(rs.next()) {
+                for(int i = 0; i < 6; i++) {
+                    results[i] = rs.getString(i+1);
+                }
+            }
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Check By Title Failed");
+        }
+        return results;
+    }
+    
 }
