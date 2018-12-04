@@ -148,7 +148,7 @@ public class User_bean {
         status = "";
         int slot = getNextCartSlot();
 
-        if(slot > 0) {
+        if(slot > 0 && slot < 6) {
             try {
             st = con.createStatement();
             st.executeUpdate("UPDATE cart SET Book"+slot+" = "+bookID+", B"+slot+"Quan = "+quantity+" WHERE UserID = "+current_user+"");
@@ -159,6 +159,8 @@ public class User_bean {
                 System.out.println("Add to Cart Failed");
                 status = "Add to Cart Failed";
             }
+        } else if(slot > 5) {
+            status = "Cart Filled";
         }
 
         return status;
@@ -177,9 +179,14 @@ public class User_bean {
                         slot = i-1;
                         System.out.println("Next Cart Slot is "+(i-1));
                         break;
+                    } else {
+                        slot = 6;
                     }
                 }
             }
+            
+            if(slot > 5)
+                System.out.println("Cart Filled");
 
         } catch (SQLException ex) {
             Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
@@ -211,12 +218,12 @@ public class User_bean {
         return false;
     }
 
-    public static String removeFromCart(int cart_slot) {
+    public static String removeFromCart(int uid, int cart_slot) {
         status = "";
 
         try {
             st = con.createStatement();
-            st.executeUpdate("UPDATE cart SET Book"+cart_slot+" = NULL, B"+cart_slot+"Quan = NULL WHERE UserID = "+current_user+"");
+            st.executeUpdate("UPDATE cart SET Book"+cart_slot+" = NULL, B"+cart_slot+"Quan = NULL WHERE UserID = "+uid+"");
             status = "Remove from Cart Successful";
 
             } catch (SQLException ex) {
@@ -250,11 +257,6 @@ public class User_bean {
                     if(s != null) {
                         temp[i] = getBook(Integer.parseInt(s));
                         temp[i][5] = rs.getString(i+7);
-                    /*    if(Integer.parseInt(rs.getString(i+7)) > Integer.parseInt(temp[i][5]))
-                            temp[i][5] = rs.getString(i+7);
-                        if(Integer.parseInt(temp[i][5]) <= 0)
-                            temp[i] = null;
-                    */
                     } else {
                         temp[i] = null;
                     }
@@ -307,14 +309,15 @@ public class User_bean {
                     removeQuantity(Integer.parseInt(temp[i][0]),Integer.parseInt(temp[i][5]));
             }
             clearCart(uid);
+            status = "Checkout Successful";
             
         } catch (SQLException ex) {
             //Logger lgr = Logger.getLogger(Version.class.getName());
             //lgr.log(Level.SEVERE, ex.getMessage(), ex);
                Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
                System.out.println("Checkout Failed");
+               status = "Checkout Failed";
         }
-        
         return status;
     }
     

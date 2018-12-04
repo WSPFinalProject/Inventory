@@ -16,7 +16,12 @@ public class Csc4380FinalProject {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Controller c = new Controller();        
+        DB_bean db = new DB_bean();
+        User_bean ub = new User_bean(db.getCon());
+        Admin_bean ab = new Admin_bean(db.getCon());
+        Controller c = new Controller(db,ub,ab);
+        view v = new view(c);
+        c.setView(v);
     }
     
 }

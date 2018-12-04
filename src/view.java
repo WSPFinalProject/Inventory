@@ -10,8 +10,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.ButtonModel;
+import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 /**
  *
  * @author FarNooshShh
@@ -121,6 +126,16 @@ public class view extends javax.swing.JFrame {
         public void setStatus(String s) {
             status_field.setText(s);
         }
+        
+        public void setStatus(String s, String category) {
+            status_field.setText(s);
+            switch(category.toUpperCase()) {
+                case "PASS":    status_field.setBackground(new Color(121, 255, 107)); break;
+                case "WARNING": status_field.setBackground(new Color(255, 255, 106)); break;
+                case "FAIL":    status_field.setBackground(new Color(255, 130, 105)); break;
+                default:        status_field.setBackground(new Color(255, 255, 106)); break;
+            }
+        }
          public String getStatus(){
             return status_field.getText();
         }
@@ -221,7 +236,6 @@ public class view extends javax.swing.JFrame {
         addButton.addActionListener(e -> c.showAddBook(this));
         deleteButton.addActionListener(e -> c.btnDeleteBook(this));
         editButton.addActionListener(e -> c.showUpdateBook(this));
-        //submitOrderButton.addActionListener(e -> c.btnCheckOutBook(this));
         loginButton.addActionListener(e -> c.showLogin(this));
         signUpButton.addActionListener(e -> c.showSignup(this));
         searchButton.addActionListener(e -> c.btnSearchBooks(this,searchMethod()));
@@ -234,15 +248,19 @@ public class view extends javax.swing.JFrame {
         cartButton.addActionListener(e -> c.showCart(this));
         checkoutButton.addActionListener(e -> c.showCheckout(this));
         submitOrderButton.addActionListener(e -> c.placeOrder(this));
+        mnuClose.addActionListener(e -> c.close());
+        buttonRemove.addActionListener(e -> c.remove(this));
     }
       
     public void showLoginDialog() {
         dialogLogin.pack();
+        dialogLogin.setLocationRelativeTo(null);
         dialogLogin.setVisible(true);
     }
     
     public void showSignupDialog() {
         DialogSignup.pack();
+        DialogSignup.setLocationRelativeTo(null);
         DialogSignup.setVisible(true);
     }
     
@@ -261,21 +279,25 @@ public class view extends javax.swing.JFrame {
     
     public void showAdd() {
         dialogAdd.pack();
+        dialogAdd.setLocationRelativeTo(null);
         dialogAdd.setVisible(true);
     }
     
     public void showUpdate() {
         dialogEdit.pack();
+        dialogEdit.setLocationRelativeTo(null);
         dialogEdit.setVisible(true);
     }
     
     public void showOrder() {
         dialogOrder.pack();
+        dialogOrder.setLocationRelativeTo(null);
         dialogOrder.setVisible(true);
     }
     
     public void showCheckout() {
         dialogCheckOut.pack();
+        dialogCheckOut.setLocationRelativeTo(null);
         dialogCheckOut.setVisible(true);
     }
     
@@ -284,6 +306,14 @@ public class view extends javax.swing.JFrame {
         String[] head = {"BookID", "Title", "Author", "Genre", "Publisher", "Quantity"};
         dtm.setColumnIdentifiers(head);
         mainTable.setModel(dtm);
+        TableColumnModel tcm = mainTable.getColumnModel();
+        int[] sizes = {60, 0, 100, 100, 150, 70};
+        for(int i = 0; i < 6; i++) {
+            if(i != 1) {
+                tcm.getColumn(i).setMaxWidth(sizes[i]);
+                tcm.getColumn(i).setMinWidth(sizes[i]);
+            }
+        }
         for(int i = 0; i < results.length; i++) {
             try {
                 dtm.addRow(new String[] {results[i][0],results[i][1],results[i][2],results[i][3],results[i][4],results[i][5]});
@@ -296,6 +326,22 @@ public class view extends javax.swing.JFrame {
     public void showCheckoutCart(String[] results) {
         jList1.setListData(results);
     }
+    
+    public int getSelected() {
+        return jList1.getSelectedIndex();
+    }
+    
+    public void remove(int x) {
+        DefaultListModel dlm = (DefaultListModel)jList1.getModel();
+        dlm.remove(x);
+    }
+    
+    public void closeLogin() {dialogLogin.dispose();}
+    public void closeSignup() {DialogSignup.dispose();}
+    public void closeOrder() {dialogOrder.dispose();}
+    public void closeAdd() {dialogAdd.dispose();}
+    public void closeCheckout() {dialogCheckOut.dispose();}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -340,8 +386,8 @@ public class view extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         usernameLoginInput = new javax.swing.JTextField();
-        passwordLoginInput = new javax.swing.JTextField();
         dialogLoginButton = new javax.swing.JButton();
+        passwordLoginInput = new javax.swing.JPasswordField();
         DialogSignup = new javax.swing.JDialog();
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
@@ -356,6 +402,8 @@ public class view extends javax.swing.JFrame {
         orderBookID = new javax.swing.JTextField();
         orderBookQuantity = new javax.swing.JTextField();
         addToCartButton = new javax.swing.JButton();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
         dialogCartView = new javax.swing.JDialog();
         jLabel28 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -366,10 +414,8 @@ public class view extends javax.swing.JFrame {
         jLabel30 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        jLabel31 = new javax.swing.JLabel();
         submitOrderButton = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        messageAlert = new javax.swing.JTextArea();
+        buttonRemove = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -629,9 +675,9 @@ public class view extends javax.swing.JFrame {
                             .addComponent(jLabel20)
                             .addComponent(jLabel21))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usernameLoginInput, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordLoginInput, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(usernameLoginInput, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                            .addComponent(passwordLoginInput)))
                     .addGroup(dialogLoginLayout.createSequentialGroup()
                         .addGap(151, 151, 151)
                         .addComponent(dialogLoginButton)))
@@ -646,13 +692,13 @@ public class view extends javax.swing.JFrame {
                 .addGroup(dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20)
                     .addComponent(usernameLoginInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22)
-                .addGroup(dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(25, 25, 25)
+                .addGroup(dialogLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel21)
                     .addComponent(passwordLoginInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(62, 62, 62)
+                .addGap(56, 56, 56)
                 .addComponent(dialogLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         jLabel22.setFont(new java.awt.Font("Lucida Sans", 1, 14)); // NOI18N
@@ -718,41 +764,60 @@ public class view extends javax.swing.JFrame {
         );
 
         jLabel27.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        jLabel27.setText("Please Enter the BookID for book you want to order");
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel27.setText("Please Enter the BookID for the book you want to order");
 
         addToCartButton.setText("Add To Cart");
+
+        jLabel32.setFont(new java.awt.Font("Lucida Sans", 0, 13)); // NOI18N
+        jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel32.setText("Book ID:");
+
+        jLabel33.setFont(new java.awt.Font("Lucida Sans", 0, 13)); // NOI18N
+        jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel33.setText("Quantity:");
 
         javax.swing.GroupLayout dialogOrderLayout = new javax.swing.GroupLayout(dialogOrder.getContentPane());
         dialogOrder.getContentPane().setLayout(dialogOrderLayout);
         dialogOrderLayout.setHorizontalGroup(
             dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dialogOrderLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel27)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogOrderLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addToCartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(dialogOrderLayout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(21, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogOrderLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addToCartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59))
+                        .addContainerGap()
+                        .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(dialogOrderLayout.createSequentialGroup()
+                .addGap(110, 110, 110)
+                .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel33, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         dialogOrderLayout.setVerticalGroup(
             dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dialogOrderLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel27)
-                .addGap(55, 55, 55)
-                .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(orderBookID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel32))
                 .addGap(18, 18, 18)
-                .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGroup(dialogOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(orderBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel33))
+                .addGap(18, 18, 18)
                 .addComponent(addToCartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jLabel28.setFont(new java.awt.Font("Phosphate", 1, 18)); // NOI18N
@@ -807,30 +872,29 @@ public class view extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jList1);
 
-        jLabel31.setText("Proceed to Checkout!!");
-
         submitOrderButton.setText("Submit Order");
 
-        messageAlert.setColumns(20);
-        messageAlert.setRows(5);
-        jScrollPane4.setViewportView(messageAlert);
+        buttonRemove.setText("Remove");
 
         javax.swing.GroupLayout dialogCheckOutLayout = new javax.swing.GroupLayout(dialogCheckOut.getContentPane());
         dialogCheckOut.getContentPane().setLayout(dialogCheckOutLayout);
         dialogCheckOutLayout.setHorizontalGroup(
             dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dialogCheckOutLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogCheckOutLayout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(buttonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
                     .addGroup(dialogCheckOutLayout.createSequentialGroup()
-                        .addComponent(jLabel31)
-                        .addGap(27, 27, 27)
-                        .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3)
-                    .addComponent(jLabel30)
-                    .addComponent(jLabel29))
-                .addContainerGap(48, Short.MAX_VALUE))
+                        .addGap(19, 19, 19)
+                        .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                            .addComponent(jLabel30)
+                            .addComponent(jLabel29))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         dialogCheckOutLayout.setVerticalGroup(
             dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -843,11 +907,9 @@ public class view extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23)
                 .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31)
-                    .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                    .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -882,7 +944,20 @@ public class view extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        mainTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(mainTable);
+        if (mainTable.getColumnModel().getColumnCount() > 0) {
+            mainTable.getColumnModel().getColumn(0).setMinWidth(60);
+            mainTable.getColumnModel().getColumn(0).setMaxWidth(60);
+            mainTable.getColumnModel().getColumn(2).setMinWidth(100);
+            mainTable.getColumnModel().getColumn(2).setMaxWidth(100);
+            mainTable.getColumnModel().getColumn(3).setMinWidth(100);
+            mainTable.getColumnModel().getColumn(3).setMaxWidth(100);
+            mainTable.getColumnModel().getColumn(4).setMinWidth(150);
+            mainTable.getColumnModel().getColumn(4).setMaxWidth(150);
+            mainTable.getColumnModel().getColumn(5).setMinWidth(70);
+            mainTable.getColumnModel().getColumn(5).setMaxWidth(70);
+        }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -922,6 +997,7 @@ public class view extends javax.swing.JFrame {
         jLabel1.setText("Search By:");
 
         radioByName.setText("Title");
+        radioByName.setOpaque(false);
         radioByName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioByNameActionPerformed(evt);
@@ -929,6 +1005,7 @@ public class view extends javax.swing.JFrame {
         });
 
         radioByAuthor.setText("Author");
+        radioByAuthor.setOpaque(false);
 
         searchButton.setText("Search");
 
@@ -973,6 +1050,7 @@ public class view extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
 
         mainLabel.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+        mainLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         mainLabel.setText("What is the Book ID? ");
 
         deleteButton.setText("Delete Book");
@@ -981,17 +1059,18 @@ public class view extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(35, Short.MAX_VALUE)
+                .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(textDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(mainLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(mainLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(textDelete)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1006,6 +1085,7 @@ public class view extends javax.swing.JFrame {
         );
 
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Admin Entry");
 
         javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
@@ -1015,18 +1095,16 @@ public class view extends javax.swing.JFrame {
             .addGroup(adminPanelLayout.createSequentialGroup()
                 .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(adminPanelLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(adminPanelLayout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(jLabel4))
-                    .addGroup(adminPanelLayout.createSequentialGroup()
                         .addGap(35, 35, 35)
                         .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(adminPanelLayout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         adminPanelLayout.setVerticalGroup(
@@ -1086,9 +1164,8 @@ public class view extends javax.swing.JFrame {
 
         getContentPane().add(loginPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(496, 33, -1, -1));
 
-        userPanel.setBackground(new java.awt.Color(102, 255, 102));
-
         jLabel26.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel26.setText("User Shopping");
 
         orderButton.setText("Order Books");
@@ -1103,19 +1180,19 @@ public class view extends javax.swing.JFrame {
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userPanelLayout.createSequentialGroup()
                 .addContainerGap(67, Short.MAX_VALUE)
-                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(checkoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(orderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel26))
+                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(checkoutButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                    .addComponent(cartButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                    .addComponent(orderButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(55, 55, 55))
         );
         userPanelLayout.setVerticalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(userPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(31, 31, 31)
                 .addComponent(jLabel26)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(orderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1127,7 +1204,8 @@ public class view extends javax.swing.JFrame {
         getContentPane().add(userPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1103, 140, -1, -1));
 
         status_field.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        getContentPane().add(status_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 150, 185, -1));
+        status_field.setOpaque(true);
+        getContentPane().add(status_field, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 150, 185, 20));
 
         jMenu1.setText("File");
 
@@ -1182,6 +1260,7 @@ public class view extends javax.swing.JFrame {
     public javax.swing.JButton btnSubmitAdd;
     public javax.swing.JButton btnUpdateEdit;
     private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JButton buttonRemove;
     private javax.swing.JButton cartButton;
     private javax.swing.JList<String> cartListView;
     private javax.swing.JButton checkoutButton;
@@ -1220,7 +1299,8 @@ public class view extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1236,19 +1316,17 @@ public class view extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loginButton;
     private javax.swing.JPanel loginPanel;
     private javax.swing.JLabel mainLabel;
     public javax.swing.JTable mainTable;
-    private javax.swing.JTextArea messageAlert;
     private javax.swing.JMenuItem mnuClose;
     private javax.swing.JTextField nameSignup;
     private javax.swing.JTextField orderBookID;
     private javax.swing.JTextField orderBookQuantity;
     private javax.swing.JButton orderButton;
-    private javax.swing.JTextField passwordLoginInput;
+    private javax.swing.JPasswordField passwordLoginInput;
     private javax.swing.JTextField passwordSignup;
     public javax.swing.JRadioButton radioByAuthor;
     public javax.swing.JRadioButton radioByName;

@@ -19,13 +19,17 @@ public class Controller {
     private static String books [][];
     private static int numOfBooks;
     private static int checkOutBooks[] ;
+    private static view vw;
     
-    public Controller()
+    public Controller(DB_bean data, User_bean ub, Admin_bean ab)
     {
-        db = new DB_bean();
-        u = new User_bean(db.getCon());
-        a = new Admin_bean(db.getCon());
-        view v = new view(this);
+        db = data;
+        u = ub;
+        a = ab;
+    }
+    
+    public void setView(view x) {
+        vw = x;
     }
     
     public void showLogin(view v) {
@@ -39,17 +43,15 @@ public class Controller {
         System.out.println(u.getStatus());
         if(u.getStatus().equals("Admin Login Successful")) {
             v.showAdmin();
-            v.setStatus("Admin Login Successful");
+            v.setStatus("Admin Login Successful", "PASS");
         } else if(u.getStatus().equals("Login Successful")) {
             v.showUser();
-            v.setStatus("Login Successful");
+            v.setStatus("Login Successful", "PASS");
         } else {
-            v.setStatus("Login Failed");
+            v.setStatus("Login Failed", "FAIL");
         }
-        /*if(u.getStatus().equals("login success")) {
-            //Need to define what to do here
-    }
-     */   
+        
+        v.closeLogin();
     }
     
     public void showSignup(view v) {
@@ -61,8 +63,8 @@ public class Controller {
         v.setStatus(u.getStatus());
         System.out.println(u.getStatus());
         u.userExists(v.getStatus());
-        v.setStatus(u.getStatus());
-       
+        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+        v.closeSignup();
     }
     public int getTotalNumOfBooks(){
         String books [][] = a.getInventory();
@@ -75,9 +77,12 @@ public class Controller {
     }
     public void btnAddBook(view v){
        a.addBook(v.getTitleAdd(),v.getAuthorAdd(),v.getGenreAdd(),v.getPublisherAdd(),Integer.parseInt(v.getQuantityAdd()));
+       v.closeAdd();
+       v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
     }
     public void btnDeleteBook(view v){
        a.deleteBook(Integer.parseInt(v.getDeleteID()));
+       v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
     }
     
     public void showUpdateBook(view v) {
@@ -90,6 +95,9 @@ public class Controller {
     
     public void btnAddtoCart(view v) {
         u.addToCart(Integer.parseInt(v.getOrderID()), Integer.parseInt(v.getOrderQuantity()));
+        v.closeOrder();
+        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+        showCart(v);
     }
     
     public void btnUpdateBook(view v){
@@ -107,7 +115,8 @@ public class Controller {
         
         
         a.editBook(Integer.parseInt(temp[0]),temp[1],temp[2],temp[3],temp[4],Integer.parseInt(temp[5]));
-        
+        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+        v.closeAdd();
     }
     public void btnCheckOutBook(view v){
         for(int i =0;i<Integer.parseInt(v.getQuantityAdd());i++){
@@ -116,7 +125,7 @@ public class Controller {
         for(int i =0;i<Integer.parseInt(v.getQuantityAdd());i++){
             a.deleteBook(checkOutBooks[i]);
         }
-        
+        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");        
     }
     public void btnSearchBooks(view v, int method){
         String[][] results;
@@ -144,7 +153,7 @@ public class Controller {
         
         for(int i = 0; i < temp.length; i++) {
             if(temp[i] != null) {
-                r.add("("+temp[i][5]+") "+temp[i][1]);
+                r.add("("+temp[i][5]+") "+(Integer.parseInt(temp[i][5]) > 9? "" :" ")+temp[i][1]);
             }
         }
         
@@ -159,6 +168,19 @@ public class Controller {
     
     public void placeOrder(view v) {
         String message = u.checkout(u.getCurrentUser());
+        v.closeCheckout();
+        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+    }
+    
+    public void remove(view v) {
+        int x = v.getSelected();
+        u.removeFromCart(u.getCurrentUser(), x+1);
+        //v.closeCheckout();
+        setCheckoutList(v);
+    }
+    
+    public void close() {
+        System.exit(0);
     }
 }
     

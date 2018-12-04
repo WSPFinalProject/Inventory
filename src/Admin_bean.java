@@ -232,4 +232,8 @@ public class Admin_bean {
         return results;
     }
     
+    public String[][] getOrder() {
+        return new String[0][0];
+    }
+    
 }
