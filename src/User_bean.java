@@ -249,7 +249,12 @@ public class User_bean {
                     //System.out.println(s);
                     if(s != null) {
                         temp[i] = getBook(Integer.parseInt(s));
-                        temp[i][5] = rs.getString(i+6);
+                        temp[i][5] = rs.getString(i+7);
+                    /*    if(Integer.parseInt(rs.getString(i+7)) > Integer.parseInt(temp[i][5]))
+                            temp[i][5] = rs.getString(i+7);
+                        if(Integer.parseInt(temp[i][5]) <= 0)
+                            temp[i] = null;
+                    */
                     } else {
                         temp[i] = null;
                     }
@@ -268,11 +273,11 @@ public class User_bean {
         String[] results = new String[6];
         try {
             st = con.createStatement();
-            rs = st.executeQuery("SELECT * FROM book WHERE BookID = "+bookID+"");
+            ResultSet r = st.executeQuery("SELECT * FROM book WHERE BookID = "+bookID+"");
 
-            if(rs.next()) {
+            if(r.next()) {
                 for(int i = 0; i < 6; i++) {
-                    results[i] = rs.getString(i+1);
+                    results[i] = r.getString(i+1);
                 }
             }
         } catch (SQLException ex) {
@@ -282,5 +287,60 @@ public class User_bean {
                System.out.println("Check By Title Failed");
         }
         return results;
+    }
+    
+    public String checkout(int uid) {
+        status = "";
+        String[][] temp = getCart(uid);
+        
+        for(int i = 0; i < temp.length; i++) {
+            if(temp[i] == null) {
+                temp[i] = new String[] {"NULL","NULL","NULL","NULL","NULL","NULL"};
+            }
+        }
+        
+        try {
+            st = con.createStatement();
+            st.executeUpdate("INSERT INTO orders (UserID,Book1,Book2,Book3,Book4,Book5,B1Quan,B2Quan,B3Quan,B4Quan,B5Quan) VALUES ("+uid+", "+temp[0][0]+", "+temp[1][0]+", "+temp[2][0]+", "+temp[3][0]+", "+temp[4][0]+", "+temp[0][5]+", "+temp[1][5]+", "+temp[2][5]+", "+temp[3][5]+", "+temp[4][5]+")");
+            for(int i = 0; i < temp.length; i++) {
+                if(!temp[i][0].equals("NULL"))
+                    removeQuantity(Integer.parseInt(temp[i][0]),Integer.parseInt(temp[i][5]));
+            }
+            clearCart(uid);
+            
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Checkout Failed");
+        }
+        
+        return status;
+    }
+    
+    public void removeQuantity(int bookID, int quantity) {
+        try {
+            st = con.createStatement();
+            st.executeUpdate("UPDATE book SET Quantity = Quantity - "+quantity+" WHERE BookID = "+bookID+"");
+            
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Remove Book Quantity Failed");
+        }
+    }
+    
+    public void clearCart(int uid) {
+        try {
+            st = con.createStatement();
+            st.executeUpdate("UPDATE cart SET Book1 = NULL, Book2 = NULL, Book3 = NULL, Book4 = NULL, Book5 = NULL, B1Quan = NULL, B2Quan = NULL, B3Quan = NULL, B4Quan = NULL, B5Quan = NULL WHERE UserID = "+uid+"");
+            
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Clear Cart Failed");
+        }
     }
 }

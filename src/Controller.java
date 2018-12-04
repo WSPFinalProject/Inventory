@@ -5,6 +5,7 @@
  */
 package csc4380.finalproject;
 
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -36,6 +37,15 @@ public class Controller {
         u.login(v.getUserLoginInput(), v.getPasswordLoginInput());
         v.setStatus(u.getStatus());
         System.out.println(u.getStatus());
+        if(u.getStatus().equals("Admin Login Successful")) {
+            v.showAdmin();
+            v.setStatus("Admin Login Successful");
+        } else if(u.getStatus().equals("Login Successful")) {
+            v.showUser();
+            v.setStatus("Login Successful");
+        } else {
+            v.setStatus("Login Failed");
+        }
         /*if(u.getStatus().equals("login success")) {
             //Need to define what to do here
     }
@@ -120,6 +130,35 @@ public class Controller {
     public void showCart(view v) {
         String[][] temp = u.getCart(u.getCurrentUser());
         v.addToTable(temp);
+    }
+    
+    public void showCheckout(view v) {
+        v.showCheckout();
+        setCheckoutList(v);
+    }
+    
+    public void setCheckoutList(view v) {
+        String[] results;
+        String[][] temp = u.getCart(u.getCurrentUser());
+        ArrayList<String> r = new ArrayList<String>();
+        
+        for(int i = 0; i < temp.length; i++) {
+            if(temp[i] != null) {
+                r.add("("+temp[i][5]+") "+temp[i][1]);
+            }
+        }
+        
+        results = new String[r.size()];
+        
+        for(int i = 0; i < r.size(); i++) {
+            results[i] = r.get(i);
+        }
+        
+        v.showCheckoutCart(results);
+    }
+    
+    public void placeOrder(view v) {
+        String message = u.checkout(u.getCurrentUser());
     }
 }
     
