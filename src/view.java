@@ -9,6 +9,7 @@ package csc4380.finalproject;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -861,6 +862,7 @@ public class view extends javax.swing.JFrame {
         );
 
         jLabel29.setFont(new java.awt.Font("Phosphate", 0, 24)); // NOI18N
+        jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel29.setText("Check Out");
 
         jLabel30.setText("Here is whats in your Cart:");
@@ -872,8 +874,10 @@ public class view extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(jList1);
 
+        submitOrderButton.setBackground(new java.awt.Color(102, 255, 102));
         submitOrderButton.setText("Submit Order");
 
+        buttonRemove.setBackground(new java.awt.Color(255, 131, 131));
         buttonRemove.setText("Remove");
 
         javax.swing.GroupLayout dialogCheckOutLayout = new javax.swing.GroupLayout(dialogCheckOut.getContentPane());
@@ -882,18 +886,17 @@ public class view extends javax.swing.JFrame {
             dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dialogCheckOutLayout.createSequentialGroup()
                 .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dialogCheckOutLayout.createSequentialGroup()
+                    .addGroup(dialogCheckOutLayout.createSequentialGroup()
                         .addGap(37, 37, 37)
                         .addComponent(buttonRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
+                        .addComponent(submitOrderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(dialogCheckOutLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(dialogCheckOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                             .addComponent(jLabel30)
-                            .addComponent(jLabel29))))
+                            .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         dialogCheckOutLayout.setVerticalGroup(
@@ -977,12 +980,15 @@ public class view extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(314, 227, -1, -1));
 
+        adminPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         addButton.setText("Add Books");
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
             }
         });
+        adminPanel.add(addButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(56, 98, 162, 40));
 
         editButton.setText("Edit Books");
         editButton.addActionListener(new java.awt.event.ActionListener() {
@@ -990,6 +996,7 @@ public class view extends javax.swing.JFrame {
                 editButtonActionPerformed(evt);
             }
         });
+        adminPanel.add(editButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(56, 145, 162, 41));
 
         jPanel4.setBackground(new java.awt.Color(153, 153, 153));
 
@@ -1047,6 +1054,8 @@ public class view extends javax.swing.JFrame {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
+        adminPanel.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 405, -1, -1));
+
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
 
         mainLabel.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -1084,46 +1093,14 @@ public class view extends javax.swing.JFrame {
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
+        adminPanel.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 204, -1, -1));
+
         jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Admin Entry");
+        adminPanel.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(56, 56, 162, -1));
 
-        javax.swing.GroupLayout adminPanelLayout = new javax.swing.GroupLayout(adminPanel);
-        adminPanel.setLayout(adminPanelLayout);
-        adminPanelLayout.setHorizontalGroup(
-            adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminPanelLayout.createSequentialGroup()
-                .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(adminPanelLayout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(adminPanelLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addGroup(adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(44, Short.MAX_VALUE))
-        );
-        adminPanelLayout.setVerticalGroup(
-            adminPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(adminPanelLayout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        getContentPane().add(adminPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 93, -1, -1));
+        getContentPane().add(adminPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
         getContentPane().add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
         loginPanel.setBackground(new java.awt.Color(204, 204, 204));
@@ -1201,7 +1178,7 @@ public class view extends javax.swing.JFrame {
                 .addContainerGap(292, Short.MAX_VALUE))
         );
 
-        getContentPane().add(userPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1103, 140, -1, -1));
+        getContentPane().add(userPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 110, -1, -1));
 
         status_field.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         status_field.setOpaque(true);
