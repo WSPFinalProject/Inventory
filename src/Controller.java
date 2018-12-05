@@ -44,13 +44,14 @@ public class Controller {
         if(u.getStatus().equals("Admin Login Successful")) {
             v.showAdmin();
             v.setStatus("Admin Login Successful", "PASS");
+            v.addToTable(showInventory());
         } else if(u.getStatus().equals("Login Successful")) {
             v.showUser();
             v.setStatus("Login Successful", "PASS");
+            v.addToTable(showInventory());
         } else {
             v.setStatus("Login Failed", "FAIL");
         }
-        v.addToTable(showInventory());
         v.closeLogin();
     }
     
