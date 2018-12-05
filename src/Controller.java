@@ -50,7 +50,7 @@ public class Controller {
         } else {
             v.setStatus("Login Failed", "FAIL");
         }
-        
+        v.addToTable(showInventory());
         v.closeLogin();
     }
     
@@ -78,11 +78,13 @@ public class Controller {
     public void btnAddBook(view v){
        a.addBook(v.getTitleAdd(),v.getAuthorAdd(),v.getGenreAdd(),v.getPublisherAdd(),Integer.parseInt(v.getQuantityAdd()));
        v.closeAdd();
-       v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+       v.setStatus(a.getStatus(),a.getStatus().contains("Successful")? "PASS":"FAIL");
+       v.addToTable(showInventory());
     }
     public void btnDeleteBook(view v){
        a.deleteBook(Integer.parseInt(v.getDeleteID()));
-       v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
+       v.setStatus(a.getStatus(),a.getStatus().contains("Successful")? "PASS":"FAIL");
+       v.addToTable(showInventory());
     }
     
     public void showUpdateBook(view v) {
@@ -115,8 +117,9 @@ public class Controller {
         
         
         a.editBook(Integer.parseInt(temp[0]),temp[1],temp[2],temp[3],temp[4],Integer.parseInt(temp[5]));
-        v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");
-        v.closeAdd();
+        v.setStatus(a.getStatus(),a.getStatus().contains("Successful")? "PASS":"FAIL");
+        v.addToTable(showInventory());
+        v.closeUpdate();
     }
     public void btnCheckOutBook(view v){
         for(int i =0;i<Integer.parseInt(v.getQuantityAdd());i++){
@@ -127,6 +130,12 @@ public class Controller {
         }
         v.setStatus(u.getStatus(),u.getStatus().contains("Successful")? "PASS":"FAIL");        
     }
+    
+    public String[][] showInventory() {
+        return a.checkByTitle("");
+        
+    }
+    
     public void btnSearchBooks(view v, int method){
         String[][] results;
         if(method == 1)
@@ -177,6 +186,10 @@ public class Controller {
         u.removeFromCart(u.getCurrentUser(), x+1);
         //v.closeCheckout();
         setCheckoutList(v);
+    }
+    
+    public void getOrders(view v) {
+        v.viewOrders(a.getOrders());
     }
     
     public void close() {

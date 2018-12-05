@@ -23,7 +23,7 @@ public class Admin_bean {
     private static ResultSet rs;
     private String  jdbc_drivers, url, user, password = "";
     private String current_user, current_native, current_lastConver;
-    private String status;
+    private static String status;
 
     public Admin_bean(Connection c) {
         con = c;
@@ -55,8 +55,6 @@ public class Admin_bean {
             }
 
         } catch (SQLException ex) {
-            //Logger lgr = Logger.getLogger(Version.class.getName());
-            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
                Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
                System.out.println("Exception Caught");
         }
@@ -65,7 +63,7 @@ public class Admin_bean {
     }
 
     public static String editBook(int bookID, String title, String author, String genre, String pub, int quantity) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -82,7 +80,7 @@ public class Admin_bean {
     }
 
     public static String addBook(String title, String author, String genre, String pub, int quantity) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -122,7 +120,7 @@ public class Admin_bean {
     }
 
     public static String deleteBook(int bookID) {
-        String status = "";
+        status = "";
 
         try {
             st = con.createStatement();
@@ -232,8 +230,45 @@ public class Admin_bean {
         return results;
     }
     
-    public String[][] getOrder() {
-        return new String[0][0];
+    public String[][] getOrders() {
+        String[][] results = new String[0][11];
+        ArrayList<String[]> temp = new ArrayList<String[]>();
+        
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM orders");
+
+            while(rs.next()) {
+                temp.add(new String[] {
+                    rs.getString(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getString(5),
+                    rs.getString(6),
+                    rs.getString(7),
+                    rs.getString(8),
+                    rs.getString(9),
+                    rs.getString(10),
+                    rs.getString(11)
+                });
+            }
+            
+            results = new String[temp.size()][11];
+            
+            for(int i = 0; i < results.length; i++) {
+                results[i] = temp.get(i);
+            }
+        } catch (SQLException ex) {
+            //Logger lgr = Logger.getLogger(Version.class.getName());
+            //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+               Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Check By Title Failed");
+        }
+        return results;
     }
     
+    public String getStatus() {
+        return status;
+    }
 }

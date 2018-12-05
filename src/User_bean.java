@@ -151,8 +151,12 @@ public class User_bean {
         if(slot > 0 && slot < 6) {
             try {
             st = con.createStatement();
-            st.executeUpdate("UPDATE cart SET Book"+slot+" = "+bookID+", B"+slot+"Quan = "+quantity+" WHERE UserID = "+current_user+"");
-            status = "Add to Cart Successful";
+            if(bookExists(bookID)) {
+                st.executeUpdate("UPDATE cart SET Book"+slot+" = "+bookID+", B"+slot+"Quan = "+quantity+" WHERE UserID = "+current_user+"");
+                status = "Add to Cart Successful";
+            } else {
+                status = "Book Doesn't Exist";
+            }
 
             } catch (SQLException ex) {
                 Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
@@ -166,6 +170,19 @@ public class User_bean {
         return status;
     }
 
+    public static boolean bookExists(int bookID) {
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM book WHERE BookID = "+bookID+"");
+            if(rs.next())
+                return true;
+            } catch (SQLException ex) {
+                Logger.getLogger(Admin_bean.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Book Enough Failed");
+            }
+        return false;
+    }
+    
     public static int getNextCartSlot() {
         int slot = -1;
 
